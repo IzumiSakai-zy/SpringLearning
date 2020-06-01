@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        spring-beans.xsd">
+    <!--通过默认构造函数创建
+    <bean id="userService" class="zy.service.UserService" />
+    <bean id="serviceImpl" class="zy.service.ServiceImpl" />
+    -->
+
+    <!--通过某个类的方法创建
+    <bean id="instanceFactory" class="zy.factory.InstanceFactory" />
+    <bean id="serviceImpl" factory-bean="instanceFactory" factory-method="getServiceImpl" />
+    -->
+
+    <!--通过某个类的静态方法创建-->
+    <bean id="serviceImpl" class="zy.factory.StaticFactory"
+          factory-method="getServiceImpl" scope="singleton"/>
+</beans>
+
+
+        <!--
+        <?xml version="1.0" encoding="UTF-8"?>
+        <beans xmlns="http://www.springframework.org/schema/beans"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.springframework.org/schema/beans
+                https://www.springframework.org/schema/beans/spring-beans.xsd">
+            <bean id="UserService" class="zy.service.UserService" />
+        </beans> -->
+
