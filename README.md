@@ -81,3 +81,138 @@
   * BeanFactory在构建容器时，采用**延迟加载**方式，使用时才创建对象
     * 适用于多例模式
   * BeanFactory的实现对象已经过时，不建议使用。
+
+******************
+
+### Spring中Bean的一些细节
+
+* 创建Bean对象的三种方式
+
+  * 第一种：使用默认构造函数创建，如果没有默认构造函数会报错。只有id和class标签
+
+    ```xml
+    <bean id="ServiceImpl" class="zy.service.ServiceImpl" />
+    ```
+    
+  * 第二种 ：使用某个类的方法创建对象，并存入Spring容器。即类方法的返回值为对象
+  
+    ```xml
+    <bean id="instanceFactory" class="zy.factory.InstanceFactory" />
+    <bean id="serviceImpl" factory-bean="instanceFactory" factory-method="getServiceImpl" />
+    ```
+    * 使用**factory-bean和factory-method**属性
+    
+  * 第三种：使用某个类的静态方法创建对象，并存入Spring容器。即类静态方法返回值为对象，如工厂类
+  
+    ```xml
+    <bean id="serviceImpl" class="zy.factory.StaticFactory" factory-method="getServiceImpl" />
+    ```
+    * 一定要是静态方法才行
+  
+* Bean的作用范围
+  
+  * <bean>标签的scope属性取值
+    * singleton : 单例的，且为默认取值
+    * prototype ： 多例的
+    * request ： web请求域
+    * session ： web会话域     * glable-session ： 全局会话范围  （5.0）把这个移除了
+      
+    * 全局session与负载均衡
+    
+      ![Image text](img/全局session与负载均衡.png)
+      
+      * glable-session存验证码，所有服务器都能使用
+    
+  * bean的生命周期
+    
+    * 单例对象 ：生命周期和**容器**一模一样
+    * init和destroy方法 ： `<bean id="serviceImpl" class="zy.factory.StaticFactory" factory-method="getServiceImpl" scope="singleton" init-method="init" destroy-method="destroy" />`
+    * 多例对象 ：使用时创建；长时间不用且没有对象引用时由java垃圾回收销毁
+
+### Spring的依赖注入
+
+* 依赖注入概念 ： 依赖关系的维护
+
+* 能注入的数据类型
+  * 基本类型和String
+  * 其他已经配置的Bean类型
+  * 复杂类型/集合类型
+  
+* 注入的方式
+
+  * 使用构造函数提供
+
+    * ```xml
+      <bean id="serviceImpl" scope="singleton" class="zy.service.ServiceImpl">
+          <constructor-arg name="name" value="IzumiSkai" />  <!--基本类型-->
+          <constructor-arg name="age" value="40" />  <!--Integer类型-->
+          <constructor-arg name="birthday" ref="now" /> <!--其他类型  使用ref属性注入-->
+      </bean>
+      <bean id="now" class="java.util.Date" />
+      ```
+
+    * <bean>标签下嵌套<constructor-arg>标签
+
+      * <constructor>属性    type，index，name都是在找给谁注入，其中name最常用
+      * <constructor>属性    value为依赖注入的值
+      * <constructor>属性    ref用Spring核心容器中出现过的对象类注入值
+    
+    * 优点 ：创建时注入是必须操作
+  
+    * 缺点 ：要是一开始想先不注入而不能实现
+  
+  * 使用set方法提供
+  
+    * ```xml
+      <bean id="setMethodInjection" scope="singleton" class="zy.service.SetMethodInjection">
+          <property name="name" value="IzumiSakai" />
+          <property name="age" value="40" />
+          <property name="birthday" ref="now" />
+      </bean>
+      <bean id="now" class="java.util.Date" />
+      ```
+    * 使用<bean>标签嵌套<property>标签，<property>的属性和<constructor-arg>类似
+    
+  * 使用注解提供
+  
+  * 使用set为容器集合注入
+  
+    ```xml
+    <!--为容器注入-->
+    <bean id="collectionInjection" class="zy.service.CollectionInjection" scope="singleton">
+        <!--String[]注入-->
+        <property name="stringArray">
+            <array>
+                <value>first</value>
+                <value>second</value>
+                <value>third</value>
+            </array>
+        </property>
+        <!--List<String>注入-->
+        <property name="list">
+            <list>
+                <value>first</value>
+                <value>second</value>
+                <value>third</value>
+            </list>
+        </property>
+        <!--map注入-->
+        <property name="map">
+            <map>
+                <entry key="1" value="first" />
+                <entry key="2" value="second" />
+                <entry key="3" value="third" />
+            </map>
+        </property>
+        <!--properties注入-->
+        <property name="properties">
+            <props>
+                <prop key="1">first</prop>
+                <prop key="2">second</prop>
+                <prop key="3">third</prop>
+            </props>
+        </property>
+    </bean>
+    ```
+  
+    
