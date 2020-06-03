@@ -214,5 +214,42 @@
         </property>
     </bean>
     ```
+*****************
+### 基于注解的IOC
+
+* 首先创建bean.xml，依赖为带有xmlns:context的依赖，并配置要扫描的包
+
+  ```xml
+  <?xml version="1.0" encoding="UTF-8"?>
+  <beans xmlns="http://www.springframework.org/schema/beans"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:context="http://www.springframework.org/schema/context"
+         xsi:schemaLocation="http://www.springframework.org/schema/beans
+          https://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/context
+          https://www.springframework.org/schema/context/spring-context.xsd">
+      <context:component-scan base-package="zy" />
+  </beans>
+  ```
   
-    
+* 用于创建对象的
+
+  * `@Component` : 属性值为value，默认为类名且首字母小写
+  * `@Controler` : 用于表现层
+  * `@Service` : 用于业务层
+  * `@Repository` : 用于持久层
+  
+* 用于注入数据的
+
+  * `@Autowired` : 自动按照类型注入，只要spring容器中有唯一一个与之类型匹配的就可以注入成功
+    * 出现位置 ：方法或变量
+    * 细节 ： 使用注解注入，set方法就不是必须的了
+    * 为接口注入，实现类的bean居然也可以。但有两个实现类就有可能会报错
+    * 当遇到多个bean匹配时。首先根据数据类型匹配容器map的value，在根据变量名称匹配容器map的key
+    * ![Image text](img/Autowired自动注入.png)
+  * `@Resource(name='accountDao')` : 按照指定bean的id注入
+    *  name属性 ：指定注入bean的id
+  * `@Value` : 用于注入基本类型和String类型
+* 用于改变作用范围
+
+  * `@Scope` : value属性值为singleton或者prototype
