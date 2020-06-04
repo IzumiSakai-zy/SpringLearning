@@ -126,8 +126,12 @@
   * bean的生命周期
     
     * 单例对象 ：生命周期和**容器**一模一样
+    
     * init和destroy方法 ： `<bean id="serviceImpl" class="zy.factory.StaticFactory" factory-method="getServiceImpl" scope="singleton" init-method="init" destroy-method="destroy" />`
+    
     * 多例对象 ：使用时创建；长时间不用且没有对象引用时由java垃圾回收销毁
+    
+*********************
 
 ### Spring的依赖注入
 
@@ -253,3 +257,11 @@
 * 用于改变作用范围
 
   * `@Scope` : value属性值为singleton或者prototype
+******************
+### spring注解实例
+
+* 案例整合mybatis和spring，能实现CRUD
+* 测试过程中`SqlSessionFactoryBuilder`对象无法通过spring反射创建，可能还需要另外配置
+* spring注解的地方
+  * `@Repository("userMapper")`  类UserMapperImpl
+  * `@Service("userService")` 类UserService          `@Resource(name="userMapper")` 类UserService的属性成员IUserMapper
