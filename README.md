@@ -328,15 +328,17 @@ ApplicationContext ac=new AnnotationConfigApplicationContext(SpringConfiguration
   * 切入点 ： 业务层中被动态代理增强了的方法
   * 切入点一定是连接点，连接点不一定是切入点
 * AOP的前置，后置，异常，最终，环绕通知
-  * 前置 ：method.invoke()之前
-  * 后置 ：method.invoke()之后
-  * 异常 ： catch里面
-  * 最终 ： finally里面
+  * 前置 ：method.invoke()之前——相当于开启手动提交事务
+  * 后置 ：method.invoke()之后——相当于提交事务
+  * 异常 ： catch里面——相当于事务回滚
+  * 最终 ： finally里面——相当于释放与事务有关的资源
   * 环绕 ： 在调用invoke方法时，有明确的切入点方法调用
 
 ****************
 
 ### AOP入门案例
+
+* 与AOP相关的都要导org.aspectj包
 
 * 首先导入含有**xmlns:aop**的xml依赖
 
@@ -380,7 +382,7 @@ ApplicationContext ac=new AnnotationConfigApplicationContext(SpringConfiguration
   * 可以使用通配符表示任意类型，但是必须有参数
   * 可以使用..表示有无参数均可，有参数可以是任意类型
   * 全通配写法：\* \*..\*.\*(..)
-  * 实际开发中切入点表达式的通常写法：切到业务层实现类下的所有方法：\* com.itheima.service.impl.\*.\*(..)
+  * 实际开发中切入点表达式的通常写法为切到业务层实现类下的所有方法：\* zy.service.AccountService\*.\*(..)
   
 * 入门代码
 
@@ -410,3 +412,119 @@ ApplicationContext ac=new AnnotationConfigApplicationContext(SpringConfiguration
     * ```java
       private IAccountService accountService=ac.getBean("accountService",IAccountService.class);
       ```
+      
+****************
+
+### AOP中的五种通知类型
+
+* 前置通知、后置通知、异常通知、最终通知。其中后置通知和异常通知永远只能执行一个
+
+* < aop:before >,< aop:after-returning > ,< aop:after-throwing ,,< aop:after >。注意后置和最后的名字区别
+  
+  * ```xml
+    <aop:config
+            <aop:aspect id="loggerAdvice" ref="logger" >
+                <!--前置通知-->
+                <aop:before method="beforeLog" pointcut="execution(* zy.service.AccountService.*(..))" />
+                <!--后置通知-->
+                <aop:after method="afterLog" pointcut="execution(* zy.service.AccountService.*(..))" />
+                <!--异常通知-->
+                <aop:after-throwing method="afterThrowingLog" pointcut="execution(* zy.service.AccountService.*(..))" />
+                <!--最终通知-->
+                <aop:after-returning method="afterReturningLog" pointcut="execution(* zy.service.AccountService.*(..))" />
+            </aop:aspect>
+        </aop:config>
+    ```
+  
+* < aop:pointcut >的使用
+
+  * 此标签根据xml的约束必须放在< aop:aspect >标签里面或外面的前面
+
+  * ```xml
+    <aop:pointcut id="pointcut1" expression="execution(* zy.service.AccountService.*(..))"/>
+    <aop:after method="afterLog" pointcut-ref="pointcut1" />
+    ```
+  
+* 环绕通知的使用
+
+  * ```java 
+    public Object aroundLog(ProceedingJoinPoint pjp){
+        Object rtValue = null;
+        try{
+            Object[] args = pjp.getArgs();//得到方法执行所需的参数
+            System.out.println("Logger类中的aroundPringLog方法开始记录日志了。。。前置");
+            rtValue = pjp.proceed(args);//明确调用业务层方法（切入点方法）
+            System.out.println("Logger类中的aroundPringLog方法开始记录日志了。。。后置");
+            return rtValue;
+        }catch (Throwable t){
+            System.out.println("Logger类中的aroundPringLog方法开始记录日志了。。。异常");
+            throw new RuntimeException(t);
+        }finally {
+            System.out.println("Logger类中的aroundPringLog方法开始记录日志了。。。最终");
+        }
+    }
+    ```
+    
+  * 问题：当我们配置了环绕通知之后，切入点方法没有执行，而通知方法执行了。
+  
+  * 分析：通过对比动态代理中的环绕通知代码，发现动态代理的环绕通知有明确的切入点方法调用，而我们的代码中没有。
+  
+  * 解决：Spring框架为我们提供了一个接口：ProceedingJoinPoint。该接口有一个方法proceed()，此方法就相当于明确调用切入点方法。该接口可以作为环绕通知的方法参数，在程序执行时，spring框架会为我们提供该接口的实现类供我们使用。
+  
+  * spring中的环绕通知另外一种理解：它是spring框架为我们提供的一种可以在代码中手动控制增强方法何时执行的方式。 
+
+***************************
+
+### 基于注解的AOP配置
+
+* 与AOP相关的都要导org.aspectj包
+
+* 引入context依赖并配置扫描包的范围
+
+* bean.xml中加上一句这个`<aop:aspectj-autoproxy />`。不加不能运行、
+
+* 注解配置的切面类Logger如下
+
+  * ```java
+    @Component("logger")
+    @Aspect//表示当前类是一个切面类
+    public class Logger {
+        @Resource(name = "date")
+        private Date date;
+    
+        @Pointcut("execution(* zy.service.AccountService.*(..))")
+        public void pointCut(){}
+    
+        @Before("execution(* zy.service.AccountService.*(..))")
+        public void beforeLog(){
+            System.out.println("前置日志："+date.toString());
+        }
+        @AfterReturning("pointCut()")
+        public void afterReturningLog(){
+            System.out.println("后置日志："+date.toString());
+        }
+        @AfterThrowing("execution(* zy.service.AccountService.*(..))")
+        public void afterThrowingLog(){
+            System.out.println("异常日志："+date.toString());
+        }
+        @After("execution(* zy.service.AccountService.*(..))")
+        public void afterLog(){
+            System.out.println("最终日志："+date.toString());
+        }
+    
+        public void setDate(Date date) { this.date = date;}
+    }
+    ```
+  
+* `@Component("logger")`是用注解配置IOC
+  
+  * `@Aspect` 是表明这是一个切面类
+  
+  * `@Resource(name = "date")`是IOC依赖注入
+  
+  * `@Pointcut("execution(* zy.service.AccountService.*(..))")`是在定义切入点，注解下面的空方法名字就是这个定义的id
+  
+  * `@Before("execution(* zy.service.AccountService.*(..))")`前置方法定义，其中的value值填入的是切入点
+  
+  * `@AfterReturning("pointCut()")`后置方法定义，其中value值填入的是已经定义好的切入点id。**一定注意要加上括号**
+* 但spring注解AOP的几个通知调用次序有bug且最新版还未解决，注解配置AOP慎用。但是可以用注解配置环绕通知
