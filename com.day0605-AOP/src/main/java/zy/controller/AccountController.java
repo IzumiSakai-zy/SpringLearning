@@ -25,7 +25,9 @@ public class AccountController {
     @Test
     public void saveAccountAopTest(){
         accountService.saveAccount();
+        System.out.println("___________________");
         accountService.deleteAccount();
+        System.out.println("___________________");
         accountService.updateAccount(500);
     }
 }

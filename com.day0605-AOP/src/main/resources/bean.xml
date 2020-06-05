@@ -18,9 +18,17 @@
 
     <!--配置AOP-->
     <aop:config>
+        <aop:pointcut id="pointcut1" expression="execution(* zy.service.AccountService.*(..))"/>
         <aop:aspect id="loggerAdvice" ref="logger" >
-                <aop:before method="log" pointcut="execution(* zy.service.AccountService.*(..))" />
-<!--            <aop:before method="log" pointcut="execution(public void zy.service.AccountService.saveAccount())" />-->
+        <aop:before method="beforeLog" pointcut="execution(public void zy.service.AccountService.saveAccount())" />
+            <!--前置通知-->
+            <aop:before method="beforeLog" pointcut="execution(* zy.service.AccountService.*(..))" />
+            <!--后置通知-->
+            <aop:after-returning method="afterReturningLog" pointcut="execution(* zy.service.AccountService.*(..))" />
+            <!--异常通知-->
+            <aop:after-throwing method="afterThrowingLog" pointcut="execution(* zy.service.AccountService.*(..))" />
+            <!--最终通知-->
+            <aop:after method="afterLog" pointcut="execution(* zy.service.AccountService.*(..))" />
         </aop:aspect>
     </aop:config>
 </beans>
