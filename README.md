@@ -263,5 +263,150 @@
 * 案例整合mybatis和spring，能实现CRUD
 * 测试过程中`SqlSessionFactoryBuilder`对象无法通过spring反射创建，可能还需要另外配置
 * spring注解的地方
+  * `@Repository("userMapper")` 类UserMapperImpl
+  * `@Service("userService")` 类UserService `@Resource(name="userMapper")` 类UserService的属性成员IUserMapper
+********************
+
+### spring完全不用xml的注解实例
+
+* 案例整合mybatis和spring，能实现CRUD
+
+* 测试过程中`SqlSessionFactoryBuilder`对象无法通过spring反射创建，可能还需要另外配置
+
+* spring注解的地方
+
   * `@Repository("userMapper")`  类UserMapperImpl
+
   * `@Service("userService")` 类UserService          `@Resource(name="userMapper")` 类UserService的属性成员IUserMapper
+  
+* 如何删除bean.xml
+
+  ```java
+  @Configuration
+  @ComponentScan({"zy"})
+  @Import(JdbcConfig.class)
+  @PropertySource("jdbcConnection.properties")
+  public class SpringConfiguration {
+  
+      @Bean(name = "builder")
+      @Scope("prototype")
+      public SqlSessionFactoryBuilder createSqlSessionFactoryBuilder(){
+          return new SqlSessionFactoryBuilder();
+      }
+}
+  ```
+
+  * `@Configuration` : 表明这是配置类
+* `@ComponentScan({"zy"})` : 表明要扫描的包。value属性是一个数组
+  
+  * `@Bean(name = "builder")` : 创建对象并存入spring容器中
+* 如果需要注入配置就直接在类体内用构造方法或者使用set来注入
+  * `@Import(JdbcConfig.class)` : 导入其他的配置类，这样在AnnotationConfigApplicationContext传参就只用传一个class字节码。有@Import的是主配置类，里面**value数组**的类是子配置类
+  * `@PropertySource("classpath:jdbcConnection.properties")` :导入property配置文件。可以直接用${jdbc.url}获取里面的值。classpath关键字表示类路径
+
+```java
+ApplicationContext ac=new AnnotationConfigApplicationContext(SpringConfiguration.class);
+```
+* 使用`AnnotationConfigApplicationContext` 并传入配置类的字节码来生成容器
+
+*************************
+
+### 事务控制基础
+
+* 执行转账操作的时候会和数据库打交道4次，每次获取的都是不同的connection对象。比如查询转账者，被转账者，这涉及两个connection对象。则整个操作无法被视作一次事务，出现错误也无法回滚。
+* 基于上述情况，用**ThreadLocal**为每一个线程绑定单独的connection，用手动try和catch方式手动提交回滚事务
+
+****************
+
+### AOP基本概念
+
+* 代理举例：现在买电脑修电脑不能直接取找厂家，没有这条路径了。现在都是去找代理商，代理商在和厂家产生联系
+* AOP作用 ：在程序运行期间，不修改源码的基础上对已有方进行i增强
+* AOP优势 ： 减少重发代码，提高开发效率，维护方便
+* AOP一些术语
+  * 连接点 ： 业务层接口中所有的方法
+  * 切入点 ： 业务层中被动态代理增强了的方法
+  * 切入点一定是连接点，连接点不一定是切入点
+* AOP的前置，后置，异常，最终，环绕通知
+  * 前置 ：method.invoke()之前
+  * 后置 ：method.invoke()之后
+  * 异常 ： catch里面
+  * 最终 ： finally里面
+  * 环绕 ： 在调用invoke方法时，有明确的切入点方法调用
+
+****************
+
+### AOP入门案例
+
+* 首先导入含有**xmlns:aop**的xml依赖
+
+* 在导入aspectj,用于解析\*简写的解析
+
+  * ```xml
+    <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjweaver</artifactId>
+        <version>1.8.7</version>
+    </dependency>
+    ```
+
+* spring中基于XML的AOP配置步骤
+
+  * 1、把通知Bean也交给spring来管理
+  * 2、使用aop:config标签表明开始AOP的配置
+  * 3、使用aop:aspect标签表明配置切面
+     * id属性：是给切面提供一个唯一标识
+     * ref属性：是指定通知类bean的Id。
+  * 4、在aop:aspect标签的内部使用对应标签来配置通知的类型
+     * 我们现在示例是让printLog方法在切入点方法执行之前之前：所以是前置通知
+         * op:before：表示配置前置通知
+         * method属性：用于指定Logger类中哪个方法是前置通知
+         * pointcut属性：用于指定切入点表达式，该表达式的含义指的是对业务层中哪些方法增强
+
+* 切入点表达式的写法：
+  * 关键字：execution(表达式)
+  * 表达式：访问修饰符  返回值  包名.包名.包名...类名.方法名(参数列表)
+      * 标准的表达式写法：public void com.itheima.service.impl.AccountServiceImpl.saveAccount()
+      * 访问修饰符可以省略：void com.itheima.service.impl.AccountServiceImpl.saveAccount()
+      * 返回值可以使用通配符，表示任意返回值： * com.itheima.service.impl.AccountServiceImpl.saveAccount()
+      * 包名可以使用通配符，表示任意包。但是有几级包，就需要写几个* ：.\* \*.\*.\*.\*.AccountServiceImpl.saveAccount())
+      * 包名可以使用..表示当前包及其子包： \* \*..AccountServiceImpl.saveAccount()
+      * 类名和方法名都可以使用*来实现通配： \* \*..\*.\*()
+  
+* 参数列表：
+  * 可以直接写数据类型：
+      * 基本类型直接写名称：int
+      * 引用类型写包名.类名的方式：java.lang.String
+  * 可以使用通配符表示任意类型，但是必须有参数
+  * 可以使用..表示有无参数均可，有参数可以是任意类型
+  * 全通配写法：\* \*..\*.\*(..)
+  * 实际开发中切入点表达式的通常写法：切到业务层实现类下的所有方法：\* com.itheima.service.impl.\*.\*(..)
+  
+* 入门代码
+
+  ```xml
+  <!--配置AccountService类-->
+  <bean id="accountService" class="zy.service.AccountService" />
+  
+  <!--配置Logger类-->
+  <bean id="logger" class="zy.utils.Logger">
+      <property name="date" ref="date"></property>
+  </bean>
+  <bean id="date" class="java.util.Date" />
+  
+  <!--配置AOP-->
+  <aop:config>
+      <!--配置切面，表示要用来增强的类-->
+      <aop:aspect id="loggerAdvice" ref="logger" >
+          <!--表示是前置通知-->
+          <aop:before method="log" pointcut=
+                  "execution(public void zy.service.AccountService.saveAccount())" />
+      </aop:aspect>
+  </aop:config>
+  ```
+
+  * 注 ：实现的时候必须数据类型和对象类型都是接口才行，不然报错。使用代理后获取的对象已经不是说接口了，而是代理对象。和mybatis的getMapper很像
+
+    * ```java
+      private IAccountService accountService=ac.getBean("accountService",IAccountService.class);
+      ```
