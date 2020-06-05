@@ -277,7 +277,7 @@
 
   * `@Repository("userMapper")`  类UserMapperImpl
 
-  * `@Service("userService")` 类UserService          `@Resource(name="userMapper")` 类UserService的属性成员IUserMapper
+  * `@Service("userService")` 类UserService ——`@Resource(name="userMapper")` 类UserService的属性成员IUserMapper
   
 * 如何完全实现注解不用bean.xml
 
@@ -301,10 +301,7 @@
   * 如果需要注入配置就直接在类体内用构造方法或者使用set来注入
 * `@Import(JdbcConfig.class)` : 导入其他的配置类，这样在AnnotationConfigApplicationContext传参就只用传一个class字节码。有@Import的是主配置类，里面**value数组**的类是子配置类
 * `@PropertySource("classpath:jdbcConnection.properties")` :导入property配置文件。可以直接用${jdbc.url}获取里面的值。classpath关键字表示类路径
-
-ApplicationContext ac=new AnnotationConfigApplicationContext(SpringConfiguration.class);
-```
-* 使用`AnnotationConfigApplicationContext` 并传入配置类的字节码来生成容器
+* 使用`AnnotationConfigApplicationContext` 并传入配置类的字节码来生成容器。`ApplicationContext ac=new AnnotationConfigApplicationContext(SpringConfiguration.class);`
 
 *************************
 
