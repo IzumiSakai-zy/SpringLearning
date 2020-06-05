@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--配置AccountService类-->
+    <bean id="accountService" class="zy.service.AccountService" />
+
+    <!--配置Logger类-->
+    <bean id="logger" class="zy.utils.Logger">
+        <property name="date" ref="date"></property>
+    </bean>
+    <bean id="date" class="java.util.Date" />
+
+    <!--配置AOP-->
+    <aop:config>
+        <aop:aspect id="loggerAdvice" ref="logger" >
+                <aop:before method="log" pointcut="execution(* zy.service.AccountService.*(..))" />
+<!--            <aop:before method="log" pointcut="execution(public void zy.service.AccountService.saveAccount())" />-->
+        </aop:aspect>
+    </aop:config>
+</beans>
