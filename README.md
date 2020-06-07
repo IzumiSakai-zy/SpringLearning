@@ -522,3 +522,58 @@
   
   * `@AfterReturning("pointCut()")`后置方法定义，其中value值填入的是已经定义好的切入点id。**一定注意要加上括号**
 * 但spring注解AOP的几个通知调用次序有bug且最新版还未解决，注解配置AOP慎用。但是可以用注解配置环绕通知
+
+******************************
+
+### Spring框架下的事务控制
+
+* 首先导入spring-tx依赖，aspectj依赖，spring-jdbc依赖
+
+  * ```xml
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
+        <version>5.0.2.RELEASE</version>
+    </dependency>
+    <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-jdbc</artifactId>
+         <version>5.0.2.RELEASE</version>
+    </dependency>
+    ```
+  
+* 配置数据源，此处使用的是sping-jdbc的数据源类。另外自己在加了使用properties文件来配置
+
+  * ```xml
+    <context:property-placeholder file-encoding="utf-8" location="classpath:jdbcConnection.properties" />
+    
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean>
+    ```
+  
+* 配置事务管理器，事务的通知，事务的属性，AOP
+
+  * ```xml
+    <!--配置事务管理器-->
+    <bean id="transactionMannager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    
+    <!--配置事务的通知-->
+    <tx:advice id="transactionInterceptor" transaction-manager="transactionMannager">
+        <tx:attributes>
+            <!--配置事务的属性-->
+            <tx:method name="*" propagation="REQUIRED" read-only="false"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--配置AOP-->
+    <aop:config>
+        <aop:pointcut id="pointcut1" expression="execution(* zy.service.UserService.*(..))"/>
+        <aop:advisor advice-ref="transactionInterceptor" pointcut-ref="pointcut1" />
+    </aop:config>
+    ```
+* 目前上面代码应该是基于DBUtiles，因为自己使用的的是mybatis，因此事务并没有实现回滚。
