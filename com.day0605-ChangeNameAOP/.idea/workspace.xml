@@ -18,6 +18,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
   <component name="ProjectId" id="1ctI63Pm9eNzr7GSgAHWwxw6jkw" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -29,10 +36,68 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="D:/BaiduNetdiskDownload/spring/spring_day04/代码/spring_day04/day04_eesy_05tx_xml" />
     <property name="project.structure.last.edited" value="Modules" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+  </component>
+  <component name="RunManager" selected="JUnit.UserControllerTest.changeNameTest">
+    <configuration name="UserControllerTest.changeNameTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="com.day0605-ChangeNameAOP" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="zy.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="zy.controller" />
+      <option name="MAIN_CLASS_NAME" value="zy.controller.UserControllerTest" />
+      <option name="METHOD_NAME" value="changeNameTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserControllerTest.findAllTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="com.day0605-ChangeNameAOP" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="zy.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="zy.controller" />
+      <option name="MAIN_CLASS_NAME" value="zy.controller.UserControllerTest" />
+      <option name="METHOD_NAME" value="findAllTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserControllerTest.findByIdTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="com.day0605-ChangeNameAOP" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="zy.controller.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="zy.controller" />
+      <option name="MAIN_CLASS_NAME" value="zy.controller.UserControllerTest" />
+      <option name="METHOD_NAME" value="findByIdTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.UserControllerTest.changeNameTest" />
+        <item itemvalue="JUnit.UserControllerTest.findAllTest" />
+        <item itemvalue="JUnit.UserControllerTest.findByIdTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -45,6 +110,8 @@
       <option name="presentableId" value="Default" />
       <updated>1591341283250</updated>
       <workItem from="1591341287237" duration="1196000" />
+      <workItem from="1591497540927" duration="2848000" />
+      <workItem from="1591500906892" duration="5238000" />
     </task>
     <servers />
   </component>
@@ -52,9 +119,37 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="154" y="0" key="SettingsEditor" timestamp="1591341372971">
+    <state x="499" y="131" key="FileChooserDialogImpl" timestamp="1591504506188">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state x="154" y="0" key="SettingsEditor/0.0.1536.864@0.0.1536.864" timestamp="1591341372971" />
+    <state x="499" y="131" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1591504506188" />
+    <state width="1483" height="418" key="GridCell.Tab.0.bottom" timestamp="1591505038500">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state width="1483" height="418" key="GridCell.Tab.0.bottom/0.0.1536.864@0.0.1536.864" timestamp="1591505038500" />
+    <state width="1483" height="418" key="GridCell.Tab.0.center" timestamp="1591505038499">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state width="1483" height="418" key="GridCell.Tab.0.center/0.0.1536.864@0.0.1536.864" timestamp="1591505038499" />
+    <state width="1483" height="418" key="GridCell.Tab.0.left" timestamp="1591505038499">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state width="1483" height="418" key="GridCell.Tab.0.left/0.0.1536.864@0.0.1536.864" timestamp="1591505038499" />
+    <state width="1483" height="418" key="GridCell.Tab.0.right" timestamp="1591505038500">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state width="1483" height="418" key="GridCell.Tab.0.right/0.0.1536.864@0.0.1536.864" timestamp="1591505038500" />
+    <state x="154" y="0" key="SettingsEditor" timestamp="1591504820571">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="154" y="0" key="SettingsEditor/0.0.1536.864@0.0.1536.864" timestamp="1591504820571" />
+    <state x="391" y="216" key="com.intellij.ide.util.TipDialog" timestamp="1591500914848">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="391" y="216" key="com.intellij.ide.util.TipDialog/0.0.1536.864@0.0.1536.864" timestamp="1591500914848" />
+    <state x="347" y="-1" width="840" height="1034" key="search.everywhere.popup" timestamp="1591503887947">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="347" y="-1" width="840" height="1034" key="search.everywhere.popup/0.0.1536.864@0.0.1536.864" timestamp="1591503887947" />
   </component>
 </project>

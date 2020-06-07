@@ -37,7 +37,7 @@ public class UserMapper implements IUserMapper {
     @Override
     public void update(User user) {
         userMapper.update(user);
-        sqlSession.commit();
+        //sqlSession.commit();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class UserMapper implements IUserMapper {
         target.setUserName(sourceUserName);
         userMapper.update(source);
         userMapper.update(target);
-        sqlSession.commit();
+        //sqlSession.commit();
     }
 
 

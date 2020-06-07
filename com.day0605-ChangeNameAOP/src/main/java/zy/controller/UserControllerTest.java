@@ -6,18 +6,19 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import zy.domain.User;
+import zy.service.IUserService;
 import zy.service.UserService;
 
 import java.util.List;
 
 public class UserControllerTest {
     private ApplicationContext ac=null;
-    private UserService userService=null;
+    private IUserService userService=null;
 
     @Before
     public void init(){
         ac=new ClassPathXmlApplicationContext("bean.xml");
-        userService=ac.getBean("userService",UserService.class);
+        userService=ac.getBean("userService",IUserService.class);
     }
 
     @After
